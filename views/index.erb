@@ -1,0 +1,38 @@
+<html>
+<head>
+  <title>Maven artifact version helper</title>
+
+<script language="Javascript">
+<!--
+function url()
+{
+    document.input.action = "getUrl"
+    document.input.submit();
+
+    return true;
+}
+
+function version()
+{
+    document.input.action = "getCurrentVersion"
+    document.input.submit();
+
+    return true;
+}
+-->
+</script>
+<noscript>You need Javascript enabled for this to work</noscript>
+</head>
+<body style="text-align:center;">
+  <form name="input" action="getUrl" method="get">
+    groupid<br/>
+    <input type="text" size="100" name="groupid" /><br/><br/><br/>
+    artifactid<br/>
+    <input type="text" size="100" name="artifactid" /><br/><br/><br/>
+    mavenrepo<br/>
+    <input type="text" size="100" name="repo" /><br/><br/>
+    <input type="button" value="URL" onclick="return url()"/>
+        <input type="button" value="Current version" onclick="return version()"/>
+</form> 
+</body>
+</html>

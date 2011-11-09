@@ -1,6 +1,6 @@
 # Maven repo worker
 
-Simple little sinatra app that helps you get urls, versions and redirects to your artifacts in an easy way. No need to create a gigant bash script to get you artifacts deployed.
+Simple little sinatra app that helps you get urls, versions and redirects to your artifacts in an easy way. No need to create a giant bash script to get you artifacts deployed.
 
 ## howto run
 

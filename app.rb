@@ -27,8 +27,7 @@ class MavenService < Sinatra::Base
 
   post '/getUrl' do
     artifact = Artifact.from_json(params['json'])
-    developmentversion = artifact.developmentversion
-    artifact.urlpart + developmentversion + "/" + artifact.artifactid+ "-"+ artifact.unique_version  + artifact.file_extension
+    artifact.artifact_url
     
   end
 
@@ -37,12 +36,10 @@ class MavenService < Sinatra::Base
     artifact.groupid=params['groupid']
     artifact.artifactid=params['artifactid']
     artifact.repo=params['repo']
-    developmentversion = artifact.developmentversion
-    artifacturl = artifact.urlpart + developmentversion + "/" + artifact.artifactid+ "-"+ artifact.unique_version  + artifact.file_extension
     client = HTTPClient.new
-    md5sum = client.get(artifacturl+".md5").body
+    md5sum = client.get(artifact.artifact_url+".md5").body
     response.headers["md5sum"] = md5sum
-    artifacturl
+    artifact.artifact_url
   end
   
   get '/getArtifact' do
@@ -50,14 +47,13 @@ class MavenService < Sinatra::Base
     artifact.groupid=params['groupid']
     artifact.artifactid=params['artifactid']
     artifact.repo=params['repo']
-    developmentversion = artifact.developmentversion
-    artifacturl = artifact.urlpart + developmentversion + "/" + artifact.artifactid+ "-"+ artifact.unique_version  + artifact.file_extension
     client = HTTPClient.new
-    md5sum = client.get(artifacturl+".md5").body
+    md5sum = client.get(artifact.artifact_url+".md5").body
     response.headers["md5sum"] = md5sum
-    redirect artifacturl
+    redirect artifact.artifact_url
 
   end
+
 
 
 
@@ -79,6 +75,10 @@ class Artifact
     repo + "/" + groupid.gsub('.','/') + "/" + artifactid.gsub('.','/') + "/"
   end
   
+  def artifact_url
+    urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + file_extension
+  end
+
   def unique_version
     developmentversion.gsub("SNAPSHOT", meta_data(urlpart + developmentversion).unique_version)
   end

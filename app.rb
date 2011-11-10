@@ -68,10 +68,22 @@ class Artifact
     artifact.groupid=params['groupid']
     artifact.artifactid=params['artifactid']
     artifact.repo=params['repo']
-    params['version'] ? artifact.version = params[:version] : artifact.version = artifact.developmentversion
+    artifact.validate_version(params['version']) ? artifact.version = params[:version] : artifact.version = artifact.developmentversion
 
     artifact
   end 
+  
+  def validate_version(version)
+    if version 
+      if version == "" #empty form 
+        return false
+      else
+        return true
+      end
+    end
+    return false
+
+  end
   
   def urlpart
     repo + "/" + groupid.gsub('.','/') + "/" + artifactid.gsub('.','/') + "/"

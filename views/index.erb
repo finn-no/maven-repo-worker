@@ -21,22 +21,45 @@ function version()
 }
 -->
 </script>
+<style>
+  div {
+    float:left;
+  }
+</style>
 <noscript>You need Javascript enabled for this to work</noscript>
 </head>
 <body style="text-align:center;">
-  <form name="input" action="getUrl" method="get">
-    groupid<br/>
-    <input type="text" size="100" name="groupid" /><br/><br/><br/>
-    artifactid<br/>
-    <input type="text" size="100" name="artifactid" /><br/><br/><br/>
-    version<br/>
-    <input type="text" size="100" name="version" /><br/><br/><br/>
-    type<br/>
-    <input type="text" size="100" name="type" /><br/><br/><br/>
-     mavenrepo<br/>
-    <input type="text" size="100" name="repo" /><br/><br/>
-    <input type="button" value="URL" onclick="return url()"/>
+  <div>
+    
+    <form name="input" action="getUrl" method="get">
+      <div>
+        <div> 
+          groupid<br/>
+          <input type="text" size="30" name="groupid" /><br/>
+        </div>
+        <div>
+          artifactid<br/>
+          <input type="text" size="30" name="artifactid" /><br/><br/><br/>
+        </div>
+        <div>
+          version<br/>
+          <input type="text" size="10" name="version" /><br/><br/><br/>
+        </div>
+        <div>
+          type<br/>
+          <input type="text" size="7" name="type" /><br/><br/><br/>
+        </div>
+        <div>
+          mavenrepo<br/>
+          <input type="text" size="50" name="repo" /><br/><br/>
+        </div>
+      </div>
+      <br/>
+      <div>
+        <input type="button" value="URL" onclick="return url()"/>
         <input type="button" value="Current version" onclick="return version()"/>
-</form> 
+      </div>
+    </form>
+  </div> 
 </body>
 </html>

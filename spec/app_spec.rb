@@ -60,15 +60,16 @@ describe MavenService do
       artifact = {
       :repo => "http://repo1.maven.org/maven2", 
       :groupid => "org.apache.cassandra",
-      :artifactid => "apache-cassandra",
+      :artifactid => "cassandra-javautils",
       :type => "jar"
       }
       get  "/getUrl?repo=" + artifact[:repo] + "&groupid=" + artifact[:groupid] + "&artifactid=" + artifact[:artifactid] + "&type=" + artifact[:type]
       last_response.should be_ok
-      last_response.body.should match "jar"
+      last_response.body.should match ".jar"
+      last_response.header["groupid"].should match "org.apache.cassandra"
       post '/getUrl', 'json' =>  artifact.to_json
       last_response.should be_ok
-      last_response.body.should match "jar"
+      last_response.body.should match ".jar"
  
     end
   end

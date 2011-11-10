@@ -33,17 +33,14 @@ class MavenService < Sinatra::Base
   get '/getUrl' do
     artifact = Artifact.from_params(params)
     client = HTTPClient.new
-    md5sum = client.get(artifact.artifact_url+".md5").body
-    response.headers["md5sum"] = md5sum
+    artifact.headers response.headers
     @value = artifact.artifact_url
     erb :response
   end
   
   get '/getArtifact' do
     artifact = Artifact.from_params(params)
-    client = HTTPClient.new
-    md5sum = client.get(artifact.artifact_url+".md5").body
-    response.headers["md5sum"] = md5sum
+    artifact.headers response.headers
     redirect artifact.artifact_url
 
   end
@@ -60,7 +57,7 @@ class Artifact
     artifact.artifactid = data['artifactid']
     data['version'] ? artifact.version = data['version'] : artifact.version = artifact.developmentversion
     if data['type'] 
-      artifact.extension = "." + data['type'] 
+      artifact.extension = data['type'] 
     end
 
     artifact
@@ -72,12 +69,22 @@ class Artifact
     artifact.artifactid=params['artifactid']
     artifact.repo=params['repo']
     if params['type'] 
-      artifact.extension = "." + params['type'] 
+      artifact.extension = params['type'] 
     end
     artifact.validate_version(params['version']) ? artifact.version = params[:version] : artifact.version = artifact.developmentversion
 
     artifact
   end 
+  
+  def headers(headers)
+    client = HTTPClient.new
+    headers['md5sum'] = client.get(artifact_url+".md5").body
+    headers['version'] = unique_version
+    headers['groupid'] = groupid
+    headers['artifactid'] = artifactid
+    headers['type'] = file_extension
+    headers
+  end
   
   def validate_version(version)
     if version 
@@ -96,7 +103,7 @@ class Artifact
   end
   
   def artifact_url
-    urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + file_extension 
+    urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + "." + file_extension 
   end
 
   def unique_version
@@ -113,7 +120,7 @@ class Artifact
   end
   
   def file_extension
-    @extension ||= packaging == "maven-plugin" ? ".jar" : "."+packaging
+    @extension ||= packaging == "maven-plugin" ? "jar" : packaging
   end
   
   def pom(url)

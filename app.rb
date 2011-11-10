@@ -18,10 +18,7 @@ class MavenService < Sinatra::Base
   end
   
   get '/getCurrentVersion' do
-    artifact = Artifact.new()
-    artifact.groupid=params['groupid']
-    artifact.artifactid=params['artifactid']
-    artifact.repo=params['repo']
+    artifact = Artifact.from_params(params)
     artifact.unique_version
   end
 
@@ -32,10 +29,7 @@ class MavenService < Sinatra::Base
   end
 
   get '/getUrl' do
-    artifact = Artifact.new()
-    artifact.groupid=params['groupid']
-    artifact.artifactid=params['artifactid']
-    artifact.repo=params['repo']
+    artifact = Artifact.from_params(params)
     client = HTTPClient.new
     md5sum = client.get(artifact.artifact_url+".md5").body
     response.headers["md5sum"] = md5sum
@@ -43,17 +37,13 @@ class MavenService < Sinatra::Base
   end
   
   get '/getArtifact' do
-    artifact = Artifact.new()
-    artifact.groupid=params['groupid']
-    artifact.artifactid=params['artifactid']
-    artifact.repo=params['repo']
+    artifact = Artifact.from_params(params)
     client = HTTPClient.new
     md5sum = client.get(artifact.artifact_url+".md5").body
     response.headers["md5sum"] = md5sum
     redirect artifact.artifact_url
 
   end
-
 
 
 
@@ -68,6 +58,14 @@ class Artifact
     artifact.repo = data['repo']
     artifact.groupid = data['groupid']
     artifact.artifactid = data['artifactid']
+    artifact
+  end
+
+  def self.from_params(params)
+    artifact = Artifact.new()
+    artifact.groupid=params['groupid']
+    artifact.artifactid=params['artifactid']
+    artifact.repo=params['repo']
     artifact
   end 
   

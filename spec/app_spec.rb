@@ -37,7 +37,19 @@ describe MavenService do
       post  '/getUrl', 'json' => artifact.to_json
       last_response.should be_ok
     end
-    it "get url with get request" do
+    it "get url with json post, specific version" do
+      artifact = {
+      :repo => "http://repo1.maven.org/maven2/", 
+      :groupid => "org.apache.cassandra",
+      :artifactid => "apache-cassandra",
+      :version => "0.7.6"
+      }
+      post  '/getUrl', 'json' => artifact.to_json
+      last_response.should be_ok
+      last_response.body.should match "0.7.6"
+
+   end
+   it "get url with get request" do
       artifact = {
       :repo => "http://repo1.maven.org/maven2", 
       :groupid => "org.apache.cassandra",
@@ -45,6 +57,17 @@ describe MavenService do
       }
       get  "/getUrl?repo=" + artifact[:repo] + "&groupid=" + artifact[:groupid] + "&artifactid=" + artifact[:artifactid]
       last_response.should be_ok
+    end
+    it "get url with version set (get request)" do
+      artifact = {
+      :repo => "http://repo1.maven.org/maven2", 
+      :groupid => "org.apache.cassandra",
+      :artifactid => "apache-cassandra",
+      :version => "0.7.7"
+      }
+      get  "/getUrl?repo=" + artifact[:repo] + "&groupid=" + artifact[:groupid] + "&artifactid=" + artifact[:artifactid] + "&version=" + artifact[:version]
+      last_response.should be_ok
+      last_response.body.should match "0.7.7"
     end
   end
   

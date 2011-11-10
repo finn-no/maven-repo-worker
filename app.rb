@@ -58,6 +58,8 @@ class Artifact
     artifact.repo = data['repo']
     artifact.groupid = data['groupid']
     artifact.artifactid = data['artifactid']
+    data['version'] ? artifact.version = data['version'] : artifact.version = artifact.developmentversion
+
     artifact
   end
 
@@ -66,6 +68,8 @@ class Artifact
     artifact.groupid=params['groupid']
     artifact.artifactid=params['artifactid']
     artifact.repo=params['repo']
+    params['version'] ? artifact.version = params[:version] : artifact.version = artifact.developmentversion
+
     artifact
   end 
   

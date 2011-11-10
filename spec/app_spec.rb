@@ -69,6 +69,17 @@ describe MavenService do
       last_response.should be_ok
       last_response.body.should match "0.7.7"
     end
+    it "get url with type set (get request)" do
+      artifact = {
+      :repo => "http://repo1.maven.org/maven2", 
+      :groupid => "org.apache.cassandra",
+      :artifactid => "apache-cassandra",
+      :type => "jar"
+      }
+      get  "/getUrl?repo=" + artifact[:repo] + "&groupid=" + artifact[:groupid] + "&artifactid=" + artifact[:artifactid] + "&type=" + artifact[:type]
+      last_response.should be_ok
+      last_response.body.should match "jar"
+    end
   end
   
 end

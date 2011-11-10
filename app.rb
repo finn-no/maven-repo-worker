@@ -59,6 +59,9 @@ class Artifact
     artifact.groupid = data['groupid']
     artifact.artifactid = data['artifactid']
     data['version'] ? artifact.version = data['version'] : artifact.version = artifact.developmentversion
+    if data['type'] 
+      artifact.extension = "." + data['type'] 
+    end
 
     artifact
   end
@@ -68,6 +71,9 @@ class Artifact
     artifact.groupid=params['groupid']
     artifact.artifactid=params['artifactid']
     artifact.repo=params['repo']
+    if params['type'] 
+      artifact.extension = "." + params['type'] 
+    end
     artifact.validate_version(params['version']) ? artifact.version = params[:version] : artifact.version = artifact.developmentversion
 
     artifact

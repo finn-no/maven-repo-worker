@@ -7,25 +7,27 @@ require 'nokogiri'
 
 
 class MavenService < Sinatra::Base
-  
+
   get '/' do
-  erb :index
+    erb :index
   end
 
   post '/getCurrentVersion' do
     artifact = Artifact.from_json(params['json'])
-    artifact.unique_version
+    @value = artifact.unique_version
+    erb :response
   end
   
   get '/getCurrentVersion' do
     artifact = Artifact.from_params(params)
-    artifact.unique_version
+    @value = artifact.unique_version
+    erb :response
   end
 
   post '/getUrl' do
     artifact = Artifact.from_json(params['json'])
-    artifact.artifact_url
-    
+    @value = artifact.artifact_url
+    erb :response
   end
 
   get '/getUrl' do
@@ -33,7 +35,8 @@ class MavenService < Sinatra::Base
     client = HTTPClient.new
     md5sum = client.get(artifact.artifact_url+".md5").body
     response.headers["md5sum"] = md5sum
-    artifact.artifact_url
+    @value = artifact.artifact_url
+    erb :response
   end
   
   get '/getArtifact' do
@@ -44,9 +47,6 @@ class MavenService < Sinatra::Base
     redirect artifact.artifact_url
 
   end
-
-
-
 end
 
 class Artifact
@@ -90,7 +90,7 @@ class Artifact
   end
   
   def artifact_url
-    urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + file_extension + "\n"
+    urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + file_extension 
   end
 
   def unique_version

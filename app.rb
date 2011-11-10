@@ -48,13 +48,13 @@ end
 
 class Artifact
   attr_accessor :repo, :groupid, :artifactid, :version, :extension
-  
+
   def self.from_json(json)
     artifact = Artifact.new()
     data = JSON.parse(json)
-    artifact.repo = data['repo']
     artifact.groupid = data['groupid']
     artifact.artifactid = data['artifactid']
+    artifact.repo = artifact.set_repo data
     data['version'] ? artifact.version = data['version'] : artifact.version = artifact.developmentversion
     if data['type'] 
       artifact.extension = data['type'] 
@@ -67,7 +67,7 @@ class Artifact
     artifact = Artifact.new()
     artifact.groupid=params['groupid']
     artifact.artifactid=params['artifactid']
-    artifact.repo=params['repo']
+    artifact.repo = artifact.set_repo params
     if params['type'] 
       artifact.extension = params['type'] 
     end
@@ -75,7 +75,27 @@ class Artifact
 
     artifact
   end 
+
+  def set_repo(data)
+    data['repo'] ? data['repo'] : find_repo(data)
+  end 
+
+  def find_repo(data)
+    if data['version']
+      /SNAPSHOT/.match(data['version']) ? set_snapshot_repo : set_release_repo
+    else
+      set_snapshot_repo 
+    end
+  end
   
+  def set_snapshot_repo
+    "http://repository.apache.org/snapshots/"
+  end
+
+  def set_release_repo
+    "http://repo1.maven.org/maven2"
+  end 
+
   def headers(headers)
     client = HTTPClient.new
     headers['md5sum'] = client.get(artifact_url+".md5").body
@@ -135,6 +155,13 @@ class Artifact
     xml = client.get(metadataurl).body
     MetaData.new(Nokogiri.XML(xml))
   end
+  
+  #def set_repo
+  #  if ENV['SNAPSHOT_REPO']
+  #    puts ENV['SNAPSHOT_REPO']
+  #  end
+
+  #end
 
 end
 

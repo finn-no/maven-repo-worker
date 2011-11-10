@@ -28,6 +28,29 @@ describe MavenService do
     end
   end
   context "get url" do
+    it "getUrl (groupid,artifactid)" do
+       artifact = {
+      :groupid => "org.apache.tiles",
+      :artifactid => "tiles-jsp"
+      }
+      post  '/getUrl', 'json' => artifact.to_json
+      last_response.should be_ok
+      last_response.body.should match "snapshot"
+      get  "/getUrl?groupid=" + artifact[:groupid] + "&artifactid=" + artifact[:artifactid]
+      last_response.should be_ok
+    end
+    it "getUrl (groupid,artifactid,version)" do
+       artifact = {
+      :groupid => "org.apache.tiles",
+      :artifactid => "tiles-jsp",
+      :version => "2.2.2"
+      }
+      post  '/getUrl', 'json' => artifact.to_json
+      last_response.should be_ok
+      last_response.body.should match "repo1.maven.org"
+      get  "/getUrl?groupid=" + artifact[:groupid] + "&artifactid=" + artifact[:artifactid] + "&version=" + artifact[:version]
+      last_response.should be_ok
+    end
     it "getUrl (repo,groupid,artifactid)" do
       artifact = {
       :repo => "http://repo1.maven.org/maven2/", 
@@ -38,7 +61,6 @@ describe MavenService do
       last_response.should be_ok
       get  "/getUrl?repo=" + artifact[:repo] + "&groupid=" + artifact[:groupid] + "&artifactid=" + artifact[:artifactid]
       last_response.should be_ok
-
     end
     it "getUrl (repo,groupid,artifactid,version)" do
       artifact = {

@@ -90,7 +90,7 @@ class Artifact
   end
   
   def artifact_url
-    urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + file_extension
+    urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + file_extension + "\n"
   end
 
   def unique_version

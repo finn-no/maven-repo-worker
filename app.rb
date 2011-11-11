@@ -82,7 +82,7 @@ class Artifact
 
   def find_repo(data)
     if data['version']
-      /SNAPSHOT/.match(data['version']) ? set_snapshot_repo : set_release_repo
+      /SNAPSHOT/.match(data['version']) || data['version'] == "latest" ? set_snapshot_repo : set_release_repo
     else
       set_snapshot_repo 
     end
@@ -108,7 +108,7 @@ class Artifact
   
   def validate_version(version)
     if version 
-      if version == "" #empty form 
+      if version == "" || version == "latest" || version == "released"  
         return false
       else
         return true
@@ -169,7 +169,11 @@ class MetaData
   end
   
   def unique_version
-    @doc.xpath("//versioning/snapshot/timestamp").text + "-" + @doc.xpath("//versioning/snapshot/buildNumber").text
+    if @doc.xpath("//versioning/snapshot/timestamp").text == ""
+      /SNAPSHOT/.match(@doc.xpath("//version").text) ? "SNAPSHOT" : ""
+    else
+      @doc.xpath("//versioning/snapshot/timestamp").text + "-" + @doc.xpath("//versioning/snapshot/buildNumber").text
+    end
   end
 end
 

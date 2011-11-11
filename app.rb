@@ -89,19 +89,19 @@ class Artifact
   end
   
   def set_snapshot_repo
-    "http://repository.apache.org/snapshots/"
+    ENV['SNAPSHOT_REPO'] ? ENV['SNAPSHOT_REPO'] : "http://repository.apache.org/snapshots/" 
   end
 
   def set_release_repo
-    "http://repo1.maven.org/maven2"
+    ENV['RELEASE_REPO'] ? ENV['RELEASE_REPO'] : "http://repo1.maven.org/maven2"
   end 
 
   def headers(headers)
     client = HTTPClient.new
-    headers['md5sum'] = client.get(artifact_url+".md5").body
     headers['version'] = unique_version
     headers['groupid'] = groupid
     headers['artifactid'] = artifactid
+    headers['md5sum'] = client.get(artifact_url+".md5").body
     headers['type'] = file_extension
     headers
   end
@@ -156,12 +156,6 @@ class Artifact
     MetaData.new(Nokogiri.XML(xml))
   end
   
-  #def set_repo
-  #  if ENV['SNAPSHOT_REPO']
-  #    puts ENV['SNAPSHOT_REPO']
-  #  end
-
-  #end
 
 end
 
@@ -171,11 +165,10 @@ class MetaData
   end
   
   def latest_version
-    @doc.xpath("//versioning/latest").text
+    @doc.xpath("//versioning/latest").text 
   end
   
   def unique_version
-    #puts @doc
     @doc.xpath("//versioning/snapshot/timestamp").text + "-" + @doc.xpath("//versioning/snapshot/buildNumber").text
   end
 end
@@ -186,6 +179,6 @@ class Pom
   end
   
   def packaging
-    @doc.xpath("//xmlns:packaging").text
+    @doc.xpath("//xmlns:packaging").text 
   end
 end

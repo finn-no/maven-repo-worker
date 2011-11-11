@@ -47,7 +47,7 @@ class MavenService < Sinatra::Base
 end
 
 class Artifact
-  attr_accessor :repo, :groupid, :artifactid, :version, :extension
+  attr_accessor :repo, :groupid, :artifactid, :version, :extension, :url
 
   def self.from_json(json)
     artifact = Artifact.new()
@@ -123,7 +123,7 @@ class Artifact
   end
   
   def artifact_url
-    urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + "." + file_extension 
+    @url ||= urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + "." + file_extension 
   end
 
   def unique_version

@@ -19,7 +19,7 @@ class MavenService < Sinatra::Base
   end
   
   get '/getCurrentVersion' do
-    artifact = Artifact.from_params(params)
+    artifact = Artifact.from_data(params)
     @value = artifact.unique_version
     erb :response
   end
@@ -31,7 +31,7 @@ class MavenService < Sinatra::Base
   end
 
   get '/getUrl' do
-    artifact = Artifact.from_params(params)
+    artifact = Artifact.from_data(params)
     client = HTTPClient.new
     artifact.headers response.headers
     @value = artifact.artifact_url
@@ -39,7 +39,7 @@ class MavenService < Sinatra::Base
   end
   
   get '/getArtifact' do
-    artifact = Artifact.from_params(params)
+    artifact = Artifact.from_data(params)
     artifact.headers response.headers
     redirect artifact.artifact_url
 
@@ -50,32 +50,23 @@ class Artifact
   attr_accessor :repo, :groupid, :artifactid, :version, :extension, :url
 
   def self.from_json(json)
-    artifact = Artifact.new()
     data = JSON.parse(json)
+    self.from_data data
+  end
+
+  
+  def self.from_data(data)
+    artifact = Artifact.new()
     artifact.groupid = data['groupid']
     artifact.artifactid = data['artifactid']
     artifact.repo = artifact.set_repo data
-    data['version'] ? artifact.version = data['version'] : artifact.version = artifact.developmentversion
+    artifact.validate_version(data['version']) ? artifact.version = data['version'] : artifact.version = artifact.developmentversion
     if data['type'] 
       artifact.extension = data['type'] 
     end
-
     artifact
   end
-
-  def self.from_params(params)
-    artifact = Artifact.new()
-    artifact.groupid=params['groupid']
-    artifact.artifactid=params['artifactid']
-    artifact.repo = artifact.set_repo params
-    if params['type'] 
-      artifact.extension = params['type'] 
-    end
-    artifact.validate_version(params['version']) ? artifact.version = params[:version] : artifact.version = artifact.developmentversion
-
-    artifact
-  end 
-
+ 
   def set_repo(data)
     data['repo'] ? data['repo'] : find_repo(data)
   end 

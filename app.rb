@@ -68,7 +68,9 @@ class Artifact
     if data['type'] 
       artifact.extension = data['type'] 
     end
-    artifact.classifier = "-#{data['classifier']}" if data['classifier']
+    if data['classifier']
+      artifact.classifier = "-#{data['classifier']}" unless data['classifier'].length == 0
+    end
       
     artifact
   end

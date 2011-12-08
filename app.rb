@@ -47,7 +47,11 @@ class MavenService < Sinatra::Base
 end
 
 class Artifact
-  attr_accessor :repo, :groupid, :artifactid, :version, :extension, :url
+  attr_accessor :repo, :groupid, :artifactid, :version, :extension, :url, :classifier
+
+  def initialize
+    @classifier = ""
+  end
 
   def self.from_json(json)
     data = JSON.parse(json)
@@ -64,6 +68,8 @@ class Artifact
     if data['type'] 
       artifact.extension = data['type'] 
     end
+    artifact.classifier = "-#{data['classifier']}" if data['classifier']
+      
     artifact
   end
  
@@ -114,7 +120,7 @@ class Artifact
   end
   
   def artifact_url
-    @url ||= urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + "." + file_extension 
+    @url ||= urlpart + developmentversion + "/" + artifactid+ "-"+ unique_version  + classifier + "." + file_extension 
   end
 
   def unique_version

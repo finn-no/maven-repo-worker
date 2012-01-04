@@ -4,6 +4,7 @@ require 'sinatra/base'
 require 'json'
 require 'httpclient'
 require 'nokogiri'
+require 'pp'
 
 
 class MavenService < Sinatra::Base
@@ -71,7 +72,7 @@ class Artifact
     if data['classifier']
       artifact.classifier = "-#{data['classifier']}" unless data['classifier'].length == 0
     end
-      
+    
     artifact
   end
  
@@ -131,6 +132,10 @@ class Artifact
   
   def developmentversion
     @version ||= meta_data(urlpart).latest_version
+    if /[\d\.]+-\d+.\d+.\d+/.match(@version)
+      return @version.gsub(/-\d+.\d+.\d+/, "-SNAPSHOT")
+    end
+    @version
   end
   
   def packaging
